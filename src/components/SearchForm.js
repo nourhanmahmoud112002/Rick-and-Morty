@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { CustomRadioGroup } from "./CustomRadioGroup";
+
+// Debounce utility
+function debounce(fn, delay) {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+}
 
 export function SearchForm({ filterHandler, resetFilter }) {
   const [filters, setFilters] = useState({
@@ -13,9 +22,15 @@ export function SearchForm({ filterHandler, resetFilter }) {
     gender: "",
   });
 
+  // Debounced filterHandler for name only
+  const debouncedFilterHandler = useMemo(() => {
+    return debounce(filterHandler, 500);
+  }, [filterHandler]);
+
   const handleChange = (field, value) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
-    filterHandler(field, value);
+
+    debouncedFilterHandler(field, value);
   };
 
   const handleReset = () => {
