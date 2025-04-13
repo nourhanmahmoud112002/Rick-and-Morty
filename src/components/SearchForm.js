@@ -24,7 +24,7 @@ export function SearchForm({ filterHandler, resetFilter }) {
 
   // Debounced filterHandler for name only
   const debouncedFilterHandler = useMemo(() => {
-    return debounce(filterHandler, 500);
+    return debounce(filterHandler, 3000);
   }, [filterHandler]);
 
   const handleChange = (field, value) => {
